@@ -94,105 +94,6 @@ def get_medicine_plan(prob):
             "Vasopressors (ICU): Norepinephrine"
         ]
     
-def generate_pdf(patient, risk, prob, medicines, doctors):
-    buf = io.BytesIO()
-    c = canvas.Canvas(buf, pagesize=A4)
-    w, h = A4
-
-    # ===== HEADER (compact) =====
-    c.setFillColor(HexColor("#0f172a"))
-    c.rect(0, h-65, w, 65, fill=1)
-
-    # Logo
-    c.drawImage(
-        "Logo.jpg",
-        30, h-55,
-        width=70, height=35,
-        mask="auto"
-    )
-
-    # Title
-    c.setFillColor(colors.white)
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(120, h-42, "CardioPredict AI")
-
-    c.setFont("Helvetica", 9)
-    c.drawRightString(w-30, h-35, "CLINICAL ASSESSMENT REPORT")
-    c.drawRightString(w-30, h-50, f"Date: {datetime.now().strftime('%d %b, %Y')}")
-
-    y = h - 95
-    c.setFillColor(colors.black)
-
-    # ===== PATIENT DETAILS BOX =====
-    c.setFont("Helvetica-Bold", 11)
-    c.drawString(30, y, "PATIENT DETAILS")
-    y -= 10
-
-    c.setStrokeColor(colors.lightgrey)
-    c.rect(30, y-85, w-60, 85, stroke=1, fill=0)
-
-    c.setFont("Helvetica", 10)
-    y -= 20
-    c.drawString(40, y, f"Name: {patient['Name']}")
-    c.drawString(300, y, f"Age / Gender: {patient['Age']} / {patient['Gender']}")
-
-    y -= 18
-    c.drawString(40, y, f"City: {patient['City']}")
-    c.drawString(300, y, f"Blood Pressure: {patient['BP']} mmHg")
-
-    y -= 18
-    c.drawString(40, y, f"Cholesterol: {patient['Cholesterol']}")
-    c.drawString(300, y, f"Glucose: {patient['Glucose']}")
-
-    # ===== RISK ASSESSMENT BOX =====
-    y -= 45
-    c.setFont("Helvetica-Bold", 11)
-    c.drawString(30, y, "CARDIAC RISK ASSESSMENT")
-    y -= 10
-
-    c.rect(30, y-45, w-60, 45, stroke=1, fill=0)
-
-    risk_color = (
-        HexColor("#15803d") if risk == "Low"
-        else HexColor("#b45309") if risk == "Moderate"
-        else HexColor("#b91c1c")
-    )
-
-    c.setFont("Helvetica-Bold", 12)
-    c.setFillColor(risk_color)
-    c.drawString(40, y-30, f"{risk.upper()} RISK")
-
-    c.setFillColor(colors.black)
-    c.setFont("Helvetica", 11)
-    c.drawRightString(w-40, y-30, f"Probability: {prob:.2f}%")
-
-    # ===== RECOMMENDATIONS BOX =====
-    y -= 70
-    c.setFont("Helvetica-Bold", 11)
-    c.drawString(30, y, "CLINICAL RECOMMENDATIONS")
-    y -= 10
-
-    box_height = 20 + len(medicines) * 14
-    c.rect(30, y-box_height, w-60, box_height, stroke=1, fill=0)
-
-    c.setFont("Helvetica", 10)
-    y -= 20
-    for m in medicines:
-        c.drawString(40, y, f"• {m}")
-        y -= 14
-
-    # ===== FOOTER =====
-    c.setFont("Helvetica-Oblique", 8)
-    c.setFillColor(colors.grey)
-    c.drawCentredString(
-        w/2,
-        25,
-        "Disclaimer: AI-generated report. For informational purposes only."
-    )
-
-    c.save()
-    buf.seek(0)
-    return buf
 
 
 
@@ -364,14 +265,7 @@ with t2:
                 "BP": bp, "Cholesterol": chol, "Glucose": gluc
             }
 
-            pdf = generate_pdf(pdata, risk, prob, meds, docs)
-            st.download_button(
-                "📥 Download Clinical Report (PDF)",
-                pdf,
-                f"Cardio_Report_{name}.pdf",
-                "application/pdf",
-                use_container_width=True
-            )
+            
 
     except FileNotFoundError:
         st.error("model.pkl not found.")
