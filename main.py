@@ -1,7 +1,6 @@
 import streamlit as st
 import pickle
 import numpy as np
-from reportlab.lib.pagesizes import A4
 import plotly.express as px
 import pandas as pd
 
