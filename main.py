@@ -2,16 +2,8 @@ import streamlit as st
 import pickle
 import numpy as np
 from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
-from reportlab.lib import colors
-from datetime import datetime
-from reportlab.lib.colors import HexColor
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.enums import TA_LEFT 
 import plotly.express as px
 import pandas as pd
-import io
 
 # -------------------------------------------------
 # PAGE CONFIG
